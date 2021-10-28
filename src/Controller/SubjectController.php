@@ -11,23 +11,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class SubjectController extends AbstractController
 {
 
-    private const POSTS = [
-        [
-            'id' => 1,
-            'slug' => 'english',
-            'name' => 'English'
-        ],
-        [
-            'id' => 2,
-            'slug' => 'french',
-            'name' => 'French'
-        ],
-        [
-            'id' => 3,
-            'slug' => 'social',
-            'name' => 'Social'
-        ],
-    ];
     /**
      * @Route("/subject/", name="subject_list", requirements={"page" = "\d+"}, defaults={"page": 5}, methods={"GET"})
      */
@@ -38,22 +21,13 @@ class SubjectController extends AbstractController
         $items = $repository->findAll();
 
         return $this->json($items);
-        return $this->json(
-            [
-                'page' => $page,
-                'limit' => $limit,
-                'data' => array_map(function (Subject $item) {
-                    return $this->generateUrl('subject_by_slug', ['slug' => $item->slug]);
-                }, $items)
-            ]
-        );
     }
 
 
     /**
      * @Route("subject/{id}", name="subject_by_id", methods={"GET"}, requirements={"id" = "\d+"})
      */
-    public function subject(Subject $subject): Response
+    public function subject($id): Response
     {
         return $this->json(
             $this->getDoctrine()->getRepository(Subject::class)->find($id)
@@ -85,5 +59,19 @@ class SubjectController extends AbstractController
         $em->flush();
 
         return $this->json($subjectPost);
+    }
+
+    /**
+     * @Route("subject/delete/{id}", name="subject_post", methods={"DELETE"})
+     */
+    public function delete($id)
+    {
+        $subject = $this->getDoctrine()->getRepository(Subject::class)->find($id);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($subject);
+        $em->flush();
+
+        return $this->json([], Response::HTTP_NO_CONTENT);
     }
 }
