@@ -30,7 +30,8 @@ class Subject
     private $slug;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $tutor_id;
 
@@ -68,17 +69,6 @@ class Subject
         return $this;
     }
 
-    public function getTutorId(): ?int
-    {
-        return $this->tutor_id;
-    }
-
-    public function setTutorId(?int $tutor_id): self
-    {
-        $this->tutor_id = $tutor_id;
-
-        return $this;
-    }
     public function getDuration(): ?int
     {
         return $this->tutor_id;
@@ -87,6 +77,29 @@ class Subject
     public function setDuration(?int $duration): self
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+
+    /**
+     *
+     * @return User
+     */
+    public function getTutorId(): User
+    {
+        return $this->tutor_id;
+    }
+
+    /**
+     * Get User
+     *
+     * @param User $tutor_id
+     * @return self
+     */
+    public function setTutorId(User $tutor_id): self
+    {
+        $this->tutor_id = $tutor_id;
 
         return $this;
     }
